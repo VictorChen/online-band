@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = function(grunt) {
+  require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
@@ -41,6 +42,14 @@ module.exports = function(grunt) {
       dist: {
         files: {
           'app/dist/app.min.js': ['app/dist/app.js']
+        }
+      }
+    },
+    connect: {
+      server: {
+        options: {
+          base: 'app',
+          keepalive: true
         }
       }
     }

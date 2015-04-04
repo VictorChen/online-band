@@ -4,15 +4,15 @@ module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
 
   grunt.initConfig({
-    clean: ['client/dist'],
+    clean: ['app/dist'],
     jshint: {
       options: {
         jshintrc: '.jshintrc',
         reporter: require('jshint-stylish')
       },
       all: [
-        'client/scripts/{,*/}*.js',
-        '!client/scripts/vendor/*'
+        'app/scripts/{,*/}*.js',
+        '!app/scripts/vendor/*'
       ]
     },
     sass: {
@@ -21,17 +21,17 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          'client/dist/main.css': 'client/styles/main.scss'
+          'app/dist/main.css': 'app/styles/main.scss'
         }
       }
     },
     requirejs: {
       dist:{
         options: {
-          baseUrl: 'client/scripts',
-          mainConfigFile: 'client/scripts/main.js',
+          baseUrl: 'app/scripts',
+          mainConfigFile: 'app/scripts/main.js',
           name: 'app',
-          out: 'client/dist/app.js',
+          out: 'app/dist/app.js',
           optimize: 'none',
           wrap: true
         }
@@ -40,7 +40,7 @@ module.exports = function(grunt) {
     uglify: {
       dist: {
         files: {
-          'client/dist/app.min.js': ['client/dist/app.js']
+          'app/dist/app.min.js': ['app/dist/app.js']
         }
       }
     }

@@ -118,6 +118,9 @@ $buttonOffset: 40px;
     margin: 5px 0;
     border-radius: 10px;
   }
+  &.track-hover {
+    background-color: $color3;
+  }
 }
 
 .track-info, .track {

@@ -15,8 +15,18 @@ function (Backbone, $, _, Template) {
       'click .add-track': 'addTrack'
     },
     addTrack: function () {
-      this.$('.loops').append('<div class="track"></div>');
-      $('<div class="track-info"><div class="track-name">Track</div></div>').insertBefore(this.$('.add-track'));
+      var $track = $('<div class="track"></div>');
+      var $trackInfo = $('<div class="track-info"></div>');
+      var $trackName = $('<div class="track-name">Track</div>');
+      $track.droppable({
+        hoverClass: "track-hover",
+        drop: function() {
+          alert( "dropped" );
+        }
+      });
+      this.$('.loops').append($track);
+      $trackInfo.append($trackName);
+      $trackInfo.insertBefore(this.$('.add-track'));
     },
     syncScrollbars: function () {
       var self = this;

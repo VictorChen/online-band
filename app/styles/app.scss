@@ -32,6 +32,7 @@ $buttonOffset: 40px;
 .left-pane {
   left: 0;
   background-color: $color5;
+  overflow: hidden;
   width: calc(100% - #{$loopsPaneWidth + $loopsPaneLeftBorderWidth});
 }
 
@@ -55,6 +56,7 @@ $buttonOffset: 40px;
   background-color: $color6;
   border-top: $controlsTopBorder solid $color2;
   user-select: none;
+  text-align: center;
 }
 
 .loops-main {
@@ -71,11 +73,25 @@ $buttonOffset: 40px;
   border-right: 5px solid $color2;
   background-color: $color6;
   width: $trackContainerWidth;
-  .track-info {
-    width: 100%;
-    border-bottom: 1px solid white;
-    padding: 5px;
-    color: white;
+}
+
+.track-info {
+  width: 100%;
+  border-bottom: 1px solid white;
+  padding: 5px;
+  color: white;
+}
+
+.add-track {
+  color: black;
+  padding-left: 11px;
+  height: 63px;
+  padding-top: 52px;
+  border-bottom: 1px solid white;
+  cursor: pointer;
+  background-color: $color1;
+  &:hover {
+    background-color: $color3;
   }
 }
 
@@ -90,12 +106,11 @@ $buttonOffset: 40px;
   min-width: calc(100% - #{$trackContainerWidth});
 }
 
-.track-info, .track {
+.track {
   width: 1500px;
-  height: $trackHeight;
-  border-bottom: 1px solid white;
-  position: relative;
-  box-sizing: border-box;
+  &:last-child {
+    margin-bottom: 100px;
+  }
   .track-loop {
     background-color: $color1;
     height: $trackHeight - 20px;
@@ -103,6 +118,13 @@ $buttonOffset: 40px;
     margin: 5px 0;
     border-radius: 10px;
   }
+}
+
+.track-info, .track {
+  height: $trackHeight;
+  border-bottom: 1px solid white;
+  position: relative;
+  box-sizing: border-box;
 }
 
 /**
@@ -154,24 +176,29 @@ $buttonOffset: 40px;
   }
 }
 
+/**
+ * Drag and drop
+ */
+.ui-draggable.ui-draggable-handle {
+  cursor: grab;
+}
 
 
 /**
  * The Play button
  */
-#container_button {
+.play-button {
   background-color: $color6;
   width: $controlsHeight;
   height: $controlsHeight;
-  margin-left: auto;
-  margin-right: auto;
+  display: inline-block;
   margin-bottom: 0px;
   margin-top: 0px;
   border-radius: 200px;
   box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
 }
 
-#hole {
+.hole {
   background-color: $color4;
   width: $controlsHeight - $holeOffset;
   height: $controlsHeight - $holeOffset;
@@ -183,7 +210,7 @@ $buttonOffset: 40px;
   box-shadow: 1px 1px 0px #5d5d5d;
 }
 
-#button {
+.button {
   width: $controlsHeight - $buttonOffset;
   height: $controlsHeight - $buttonOffset;
   margin-left: auto;
@@ -197,12 +224,12 @@ $buttonOffset: 40px;
   transition: all .2s;
 }
 
-#button:active {
+.button:active {
   top: 9px;
   box-shadow: inset 0px 2px 0px #a8a8a8;
 }
 
-#triangle {
+.triangle {
   width: 0px;
   height: 0px;
   margin-left: 50%;
@@ -216,10 +243,10 @@ $buttonOffset: 40px;
   transition: all .3s;
 }
 
-#button:hover #triangle {
+.button:hover .triangle {
   border-left: 25px solid #45bde9;
 }
 
-#button:active #triangle {
+.button:active .triangle {
   border-left: 25px solid #e94545;
 }

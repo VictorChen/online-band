@@ -1,9 +1,10 @@
 // Main colors fromm light to dark
 $color1: #E5E5FF;
 $color2: #9999CC;
-$color3: #00004C;
-$color4: #666666;
-$color5: #191919;
+$color3: #45bde9;
+$color4: #00004C;
+$color5: #666666;
+$color6: #191919;
 
 // Loops pane
 $loopsPaneWidth: 300px;
@@ -21,10 +22,6 @@ $trackContainerWidth: 100px;
 $holeOffset: 20px;
 $buttonOffset: 40px;
 
-audio {
-  width: 100%;
-}
-
 .left-pane, .loops-pane {
   position: absolute;
   top: 0;
@@ -33,7 +30,7 @@ audio {
 
 .left-pane {
   left: 0;
-  background-color: $color4;
+  background-color: $color5;
   width: calc(100% - #{$loopsPaneWidth + $loopsPaneLeftBorderWidth});
 }
 
@@ -41,20 +38,20 @@ audio {
   right: 0;
   width: $loopsPaneWidth;
   border-left: $loopsPaneLeftBorderWidth solid $color2;
-  background-color: $color5;
+  background-color: $color6;
   overflow: auto;
 }
 
 .left-pane .loops-main {
   width: 100%;
   height: calc(100% - #{$controlsHeight + $controlsTopBorder});
-  background-color: $color4;
+  background-color: $color5;
 }
 
 .left-pane .controls {
   width: 100%;
   height: $controlsHeight;
-  background-color: $color5;
+  background-color: $color6;
   border-top: $controlsTopBorder solid $color2;
   user-select: none;
 }
@@ -94,13 +91,22 @@ audio {
   height: $trackHeight;
 }
 
+/**
+ * Categories
+ */
+.categories {
+  border-bottom: 5px solid $color2;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+}
+
 .category-button {
   padding: 10px;
   margin: 2px;
   border-radius: 10px;
   background-color: $color1;
   display: inline-block;
-  border: 1px solid $color3;
+  border: 1px solid $color4;
   transition: all 0.5s;
 }
 
@@ -117,12 +123,32 @@ audio {
   padding: 15px;
 }
 
+/**
+ * Available Loops
+ */
+.loop-available {
+  padding: 5px;
+  background-color: $color1;
+  margin: 5px;
+  border-radius: 10px;
+  .loop-name {
+    padding: 5px;
+  }
+  audio {
+    width: 100%;
+  }
+  &:hover {
+    background-color: $color3;
+  }
+}
+
+
 
 /**
  * The Play button
  */
 #container_button {
-  background-color: $color5;
+  background-color: $color6;
   width: $controlsHeight;
   height: $controlsHeight;
   margin-left: auto;
@@ -134,7 +160,7 @@ audio {
 }
 
 #hole {
-  background-color: $color3;
+  background-color: $color4;
   width: $controlsHeight - $holeOffset;
   height: $controlsHeight - $holeOffset;
   margin-left: auto;
@@ -174,7 +200,7 @@ audio {
   position: relative;
   border-top: 15px solid transparent;
   border-bottom: 15px solid transparent;
-  border-left: 25px solid $color3;
+  border-left: 25px solid $color4;
   transition: all .3s;
 }
 

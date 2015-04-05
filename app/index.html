@@ -5,22 +5,30 @@
     <title>Online Band</title>
     <link rel="stylesheet" type="text/css" href="bower_components/normalize.css/normalize.css">
     <link rel="stylesheet" type="text/css" href="dist/app.css">
-    <script data-main="scripts/main" src="bower_components/requirejs/require.js"></script>
+    <script data-main="main" src="bower_components/requirejs/require.js"></script>
   </head>
   <body>
     <div class="left-pane">
       <div class="loops-main">
 
         <div class="tracks">
-          <div class="track-info"></div>
-          <div class="track-info"></div>
-          <div class="track-info"></div>
+          <div class="track-info">
+            <div class="track-name">Track 1</div>
+          </div>
+          <div class="track-info">
+            <div class="track-name">Track 2</div>
+          </div>
+          <div class="track-info">
+            <div class="track-name">Track 3</div>
+          </div>
         </div>
 
         <div class="loops">
-          <div class="track-loop"></div>
-          <div class="track-loop"></div>
-          <div class="track-loop"></div>
+          <div class="track">
+            <span class="track-loop" style="position: absolute; left: 100px; width: 300px;">Name of loop</span>
+          </div>
+          <div class="track"></div>
+          <div class="track"></div>
         </div>
       
 
@@ -35,9 +43,6 @@
         </div>
       </div>
     </div>
-    <div class="loops-pane">
-      <div class="categories"></div>
-      <div class="loops-available"></div>
-    </div>
+    <div class="loops-pane"></div>
   </body>
 </html>

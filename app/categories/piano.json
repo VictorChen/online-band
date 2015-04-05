@@ -1,0 +1,12 @@
+[
+  {
+    "src": ["loops/Lemon.mp3", "loops/Lemon.ogg"],
+    "name": "Lemon",
+    "category": "Piano"
+  },
+  {
+    "src": ["loops/looperman-l-1172109-0081261-widetip-what-i-did-for-love-remake.wav"],
+    "name": "What I Did For Love Remake",
+    "category": "Piano"
+  }
+]

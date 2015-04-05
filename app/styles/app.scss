@@ -17,6 +17,7 @@ $controlsTopBorder: 5px;
 // Tracks
 $trackHeight: 50px;
 $trackContainerWidth: 100px;
+$trackRightBorderWidth: 5px;
 
 // Play Button
 $holeOffset: 20px;
@@ -67,9 +68,13 @@ $buttonOffset: 40px;
   left: 0;
   min-height: 100%;
   max-height: 100%;
+  border-right: 5px solid $color2;
+  background-color: $color6;
   width: $trackContainerWidth;
   .track-info {
     width: 100%;
+    background-color: $color4;
+    border-bottom: 1px solid white;
   }
 }
 
@@ -77,18 +82,23 @@ $buttonOffset: 40px;
   position: absolute;
   overflow: auto;
   top: 0;
-  left: $trackContainerWidth;
+  left: $trackContainerWidth + $trackRightBorderWidth;
   max-height: 100%;
   min-height: 100%;
   max-width: calc(100% - #{$trackContainerWidth});
   min-width: calc(100% - #{$trackContainerWidth});
-  .track-loop {
-    width: 500px;
-  }
 }
 
-.track-info, .track-loop {
+.track-info, .track {
+  width: 1500px;
   height: $trackHeight;
+  background-color: $color6;
+  border-bottom: 1px solid white;
+  position: relative;
+  .track-loop {
+    background-color: $color1;
+    height: 100%;
+  }
 }
 
 /**

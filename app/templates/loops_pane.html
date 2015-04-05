@@ -2,6 +2,7 @@
   <% _.each(categories, function(category) { %>
     <span class="category-button" data-category="<%= category.id %>">
       <%= category.name %>
+      (<%= category.count %>)
     </span>
   <% }); %>
 </div>

@@ -15,10 +15,11 @@ function ($, _, Backbone, categoryModel) {
      */
     url: 'categories.json', // should really just be /categories
     parse: function (categories) {
-      var categoryModels = _.map(categories, function (name, key) {
+      var categoryModels = _.map(categories, function (category) {
         return new categoryModel({
-          id: key + '.json', // shouldn't need the .json...
-          name: name
+          id: category.key + '.json', // shouldn't need the .json...
+          name: category.name,
+          count: category.count
         });
       });
 

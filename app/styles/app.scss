@@ -21,6 +21,10 @@ $trackContainerWidth: 100px;
 $holeOffset: 20px;
 $buttonOffset: 40px;
 
+audio {
+  width: 100%;
+}
+
 .left-pane, .loops-pane {
   position: absolute;
   top: 0;
@@ -38,6 +42,7 @@ $buttonOffset: 40px;
   width: $loopsPaneWidth;
   border-left: $loopsPaneLeftBorderWidth solid $color2;
   background-color: $color5;
+  overflow: auto;
 }
 
 .left-pane .loops-main {
@@ -89,8 +94,33 @@ $buttonOffset: 40px;
   height: $trackHeight;
 }
 
+.category-button {
+  padding: 10px;
+  margin: 2px;
+  border-radius: 10px;
+  background-color: $color1;
+  display: inline-block;
+  border: 1px solid $color3;
+  transition: all 0.5s;
+}
+
+.category-button:hover {
+  background-color: #45bde9;
+  padding: 15px;
+  border: 1px solid $color1;
+  cursor: pointer;
+}
+
+.category-button.active {
+  background-color: #e94545;
+  color: $color1;
+  padding: 15px;
+}
 
 
+/**
+ * The Play button
+ */
 #container_button {
   background-color: $color5;
   width: $controlsHeight;

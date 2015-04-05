@@ -1,0 +1,8 @@
+<div class="loop-available">
+  <div class="loop-name"><%= name %></div>
+  <audio controls preload="metadata">
+    <% _.each(src, function(path) { %>
+      <source src="<%= path %>">
+    <% }); %>
+  </audio>
+</div>

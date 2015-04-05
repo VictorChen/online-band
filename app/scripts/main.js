@@ -2,13 +2,15 @@
 
 require.config({
   shim: {
-    'howler': {
+    howler: {
       exports: 'Howler'
     }
   },
   paths: {
-    'jquery': '../bower_components/jquery/dist/jquery',
-    'howler': '../bower_components/howler/src/howler.core'
+    jquery: '../bower_components/jquery/dist/jquery',
+    underscore: '../bower_components/underscore/underscore',
+    howler: '../bower_components/howler/src/howler.core',
+    text: '../bower_components/text/text'
   }
 });
 

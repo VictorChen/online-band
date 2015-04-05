@@ -1,5 +1,11 @@
-define(['jquery', 'howler'], function ($, Howler) {
-	'use strict';
+define([
+  'jquery',
+  'howler',
+  'loops_pane'
+],
+
+function ($, Howler) {
+  'use strict';
 
   var easy = new Howler.Howl({
     src: ['loops/Lemon.mp3', 'loops/Lemon.ogg']
@@ -13,7 +19,7 @@ define(['jquery', 'howler'], function ($, Howler) {
     }
   });
 
-  piano.play();
+  // piano.play();
   // piano.play();
   return [easy, piano];
 });

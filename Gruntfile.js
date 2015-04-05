@@ -22,8 +22,21 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          'app/dist/main.css': 'app/styles/main.scss'
+          'app/dist/app.css': 'app/styles/app.scss'
         }
+      }
+    },
+    autoprefixer: {
+      dist: {
+        options: {
+          browsers: ['last 10 versions']
+        },
+        files: [{
+          expand: true,
+          flatten: true,
+          src: 'app/dist/*.css',
+          dest: 'app/dist/'
+        }]
       }
     },
     requirejs: {
@@ -59,6 +72,7 @@ module.exports = function(grunt) {
     'clean',
     'jshint',
     'sass',
+    'autoprefixer',
     'requirejs',
     'uglify'
   ]);

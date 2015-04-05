@@ -1,0 +1,157 @@
+// Main colors fromm light to dark
+$color1: #E5E5FF;
+$color2: #9999CC;
+$color3: #00004C;
+$color4: #666666;
+$color5: #191919;
+
+// Loops pane
+$loopsPaneWidth: 300px;
+$loopsPaneLeftBorderWidth: 5px;
+
+// Music controls
+$controlsHeight: 100px;
+$controlsTopBorder: 5px;
+
+// Tracks
+$trackHeight: 50px;
+$trackContainerWidth: 100px;
+
+// Play Button
+$holeOffset: 20px;
+$buttonOffset: 40px;
+
+.left-pane, .loops-pane {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.left-pane {
+  left: 0;
+  background-color: $color4;
+  width: calc(100% - #{$loopsPaneWidth + $loopsPaneLeftBorderWidth});
+}
+
+.loops-pane {
+  right: 0;
+  width: $loopsPaneWidth;
+  border-left: $loopsPaneLeftBorderWidth solid $color2;
+  background-color: $color5;
+}
+
+.left-pane .loops-main {
+  width: 100%;
+  height: calc(100% - #{$controlsHeight + $controlsTopBorder});
+  background-color: $color4;
+}
+
+.left-pane .controls {
+  width: 100%;
+  height: $controlsHeight;
+  background-color: $color5;
+  border-top: $controlsTopBorder solid $color2;
+  user-select: none;
+}
+
+.loops-main {
+  position: relative;
+}
+
+.tracks {
+  position: absolute;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  min-height: 100%;
+  max-height: 100%;
+  width: $trackContainerWidth;
+  .track-info {
+    width: 100%;
+  }
+}
+
+.loops {
+  position: absolute;
+  overflow: auto;
+  top: 0;
+  left: $trackContainerWidth;
+  max-height: 100%;
+  min-height: 100%;
+  max-width: calc(100% - #{$trackContainerWidth});
+  min-width: calc(100% - #{$trackContainerWidth});
+  .track-loop {
+    width: 500px;
+  }
+}
+
+.track-info, .track-loop {
+  height: $trackHeight;
+}
+
+
+
+#container_button {
+  background-color: $color5;
+  width: $controlsHeight;
+  height: $controlsHeight;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  border-radius: 200px;
+  box-shadow: inset 0px 2px 0px #585858, 1px 1px 0px #000, 2px 2px 5px #000;
+}
+
+#hole {
+  background-color: $color3;
+  width: $controlsHeight - $holeOffset;
+  height: $controlsHeight - $holeOffset;
+  margin-left: auto;
+  margin-right: auto;
+  top: $holeOffset / 2;
+  position: relative;
+  border-radius: 155px;
+  box-shadow: 1px 1px 0px #5d5d5d;
+}
+
+#button {
+  width: $controlsHeight - $buttonOffset;
+  height: $controlsHeight - $buttonOffset;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: auto;
+  cursor: pointer;
+  position: relative;
+  background-image: linear-gradient(bottom, rgb(82,79,82) 0%, rgb(134,134,134) 57%);
+  border-radius: 150px;
+  box-shadow: inset 0px 2px 0px #a8a8a8, 0px 2px 0px #2a2a2a, 0px 3px 0px #2a2a2a, 0px 4px 0px #2a2a2a, 0px 5px 0px #2a2a2a, 0px 6px 0px #2a2a2a, 0px 7px 0px #2a2a2a, 0px 8px 0px #2a2a2a, 0px 9px 0px #2a2a2a, 0px 10px 0px #2a2a2a, 10px 20px 10px #000;
+  transition: all .2s;
+}
+
+#button:active {
+  top: 9px;
+  box-shadow: inset 0px 2px 0px #a8a8a8;
+}
+
+#triangle {
+  width: 0px;
+  height: 0px;
+  margin-left: 50%;
+  margin-top: 50%;
+  left: -8px;
+  top: -17px;
+  position: relative;
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 25px solid $color3;
+  transition: all .3s;
+}
+
+#button:hover #triangle {
+  border-left: 25px solid #45bde9;
+}
+
+#button:active #triangle {
+  border-left: 25px solid #e94545;
+}

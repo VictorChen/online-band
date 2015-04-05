@@ -1,19 +1,19 @@
 define(['jquery', 'howler'], function ($, Howler) {
 	'use strict';
 
-  var easy = window.easy = new Howler.Howl({
-    src: ['loops/easy/Lemon.mp3', 'loops/easy/Lemon.ogg']
+  var easy = new Howler.Howl({
+    src: ['loops/Lemon.mp3', 'loops/Lemon.ogg']
   });
 
-  var hipHop = new Howler.Howl({
-    src: ['loops/hip-hop/Party_All_Night_Long.mp3']
+
+  var piano = new Howler.Howl({
+    src: ['loops/looperman-l-1172109-0081261-widetip-what-i-did-for-love-remake.wav'],
+    onend: function () {
+      easy.play();      
+    }
   });
 
-  var pop = new Howler.Howl({
-    src: ['loops/pop/super_sahil.mp3']
-  });
-
-  easy.play();
-  // hipHop.play();
-  pop.play();
+  piano.play();
+  // piano.play();
+  return [easy, piano];
 });

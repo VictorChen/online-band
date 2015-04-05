@@ -1,0 +1,26 @@
+{
+  "easy": {
+    "loops": [
+      {
+        "src": ["loops/Lemon.mp3", "loops/Lemon.ogg"],
+        "name": "Lemon"
+      }
+    ]
+  },
+  "hip-hop": {
+    "loops": [
+      {
+        "src": ["loops/Party_All_Night_Long.mp3"],
+        "name": "Party All Night Long"
+      }
+    ]
+  },
+  "pop": {
+    "loops" : [
+      {
+        "src": ["loops/super_sahil.mp3"],
+        "name": "Super Sahil"
+      }
+    ]
+  }
+}

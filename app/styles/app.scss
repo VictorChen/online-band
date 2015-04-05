@@ -73,8 +73,9 @@ $buttonOffset: 40px;
   width: $trackContainerWidth;
   .track-info {
     width: 100%;
-    background-color: $color4;
     border-bottom: 1px solid white;
+    padding: 5px;
+    color: white;
   }
 }
 
@@ -92,12 +93,15 @@ $buttonOffset: 40px;
 .track-info, .track {
   width: 1500px;
   height: $trackHeight;
-  background-color: $color6;
   border-bottom: 1px solid white;
   position: relative;
+  box-sizing: border-box;
   .track-loop {
     background-color: $color1;
-    height: 100%;
+    height: $trackHeight - 20px;
+    padding: 5px;
+    margin: 5px 0;
+    border-radius: 10px;
   }
 }
 
@@ -122,7 +126,6 @@ $buttonOffset: 40px;
 
 .category-button:hover {
   background-color: #45bde9;
-  padding: 15px;
   border: 1px solid $color1;
   cursor: pointer;
 }
@@ -130,7 +133,6 @@ $buttonOffset: 40px;
 .category-button.active {
   background-color: #e94545;
   color: $color1;
-  padding: 15px;
 }
 
 /**

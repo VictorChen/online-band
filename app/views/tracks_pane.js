@@ -42,6 +42,7 @@ function (Backbone, $, _, Template) {
             // TODO: rethink this
             $loop.css('left', position.left - 105);
             $loop.addClass('track-loop');
+            $loop.width($loop.attr('duration') * 50);
             $loop.resizable({
               handles: 'e, w'
             });

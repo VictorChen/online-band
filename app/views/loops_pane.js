@@ -23,12 +23,20 @@ function (Backbone, $, _, Template, LoopTemplate) {
     createCategory: function (categoryModel, $categoryContainer) {
       categoryModel.fetch().done(function (loops) {
         _.each(loops, function (loop) {
-          $categoryContainer.append(loopAvailableTemplate(loop));
+          var $newLoop = $(loopAvailableTemplate(loop));
+          $newLoop.find('audio').on('loadedmetadata', function () {
+            $newLoop.attr('duration', $(this)[0].duration);
+          });
+          $categoryContainer.append($newLoop);
         });
 
         $categoryContainer.find('.loop-available').draggable({
           appendTo: 'body',
-          helper: 'clone',
+          helper: function () {
+            var $clone = $(this).clone();
+            $clone.width($(this).attr('duration') * 50);
+            return $clone;
+          },
           snap: true,
           snapTolerance: 5
         });

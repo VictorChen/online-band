@@ -4,7 +4,8 @@ require([
   'models/categories_collection',
   'views/loops_pane',
   'views/tracks_pane',
-  'views/controls_pane'
+  'views/controls_pane',
+  'jquery_ui/ui/resizable'
 ],
 
 function (

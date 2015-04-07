@@ -4,7 +4,7 @@ define([
   'underscore',
   'text!../templates/loops_pane.html',
   'text!../templates/loop_available.html',
-  'jqueryui/ui/draggable'
+  'jquery_ui/ui/draggable'
 ],
 
 function (Backbone, $, _, Template, LoopTemplate) {
@@ -15,7 +15,7 @@ function (Backbone, $, _, Template, LoopTemplate) {
   return Backbone.View.extend({
     template: _.template(Template),
     events: {
-      'click .category-button': 'showCategoryLoops'
+      'click .hover-button': 'showCategoryLoops'
     },
     initialize: function (options) {
       this.collection = options.collection;
@@ -27,8 +27,10 @@ function (Backbone, $, _, Template, LoopTemplate) {
         });
 
         $categoryContainer.find('.loop-available').draggable({
-          appendTo: '.left-pane',
-          helper: 'clone'
+          appendTo: 'body',
+          helper: 'clone',
+          snap: true,
+          snapTolerance: 5
         });
       });
     },

@@ -12,7 +12,7 @@ require.config({
     backbone: 'bower_components/backbone/backbone',
     howler: 'bower_components/howler/src/howler.core',
     text: 'bower_components/text/text',
-    jqueryui: 'bower_components/jquery-ui/',
+    jquery_ui: 'bower_components/jquery-ui/'
   }
 });
 

@@ -1,10 +1,12 @@
 // Main colors fromm light to dark
 $color1: #E5E5FF;
 $color2: #9999CC;
-$color3: #45bde9;
 $color4: #00004C;
 $color5: #666666;
 $color6: #191919;
+
+$hoverColor: #45bde9;
+$activeColor: #54B344;
 
 // Loops pane
 $loopsPaneWidth: 300px;
@@ -15,7 +17,7 @@ $controlsHeight: 100px;
 $controlsTopBorder: 5px;
 
 // Tracks
-$trackHeight: 50px;
+$trackHeight: 80px;
 $trackContainerWidth: 100px;
 $trackRightBorderWidth: 5px;
 
@@ -23,22 +25,25 @@ $trackRightBorderWidth: 5px;
 $holeOffset: 20px;
 $buttonOffset: 40px;
 
-.left-pane, .loops-pane {
-  position: absolute;
-  top: 0;
+html, body {
   height: 100%;
 }
 
+.left-pane, .loops-pane {
+  float: left;
+  height: 100%;
+  box-sizing: border-box;
+}
+
 .left-pane {
-  left: 0;
+  width: 80%;
   background-color: $color5;
   overflow: hidden;
-  width: calc(100% - #{$loopsPaneWidth + $loopsPaneLeftBorderWidth});
 }
 
 .loops-pane {
-  right: 0;
-  width: $loopsPaneWidth;
+  width: 20%;
+  float: left;
   border-left: $loopsPaneLeftBorderWidth solid $color2;
   background-color: $color6;
   overflow: auto;
@@ -77,22 +82,9 @@ $buttonOffset: 40px;
 
 .track-info {
   width: 100%;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid $color1;
   padding: 5px;
-  color: white;
-}
-
-.add-track {
-  color: black;
-  padding-left: 11px;
-  height: 63px;
-  padding-top: 52px;
-  border-bottom: 1px solid white;
-  cursor: pointer;
-  background-color: $color1;
-  &:hover {
-    background-color: $color3;
-  }
+  color: $color1;
 }
 
 .loops {
@@ -102,8 +94,8 @@ $buttonOffset: 40px;
   left: $trackContainerWidth + $trackRightBorderWidth;
   max-height: 100%;
   min-height: 100%;
-  max-width: calc(100% - #{$trackContainerWidth});
-  min-width: calc(100% - #{$trackContainerWidth});
+  max-width: calc(100% - #{$trackContainerWidth + $trackRightBorderWidth});
+  min-width: calc(100% - #{$trackContainerWidth + $trackRightBorderWidth});
 }
 
 .track {
@@ -112,22 +104,29 @@ $buttonOffset: 40px;
     margin-bottom: 100px;
   }
   .track-loop {
+    position: absolute;
     background-color: $color1;
     height: $trackHeight - 20px;
     padding: 5px;
     margin: 5px 0;
     border-radius: 10px;
+    z-index: 10;
   }
   &.track-hover {
-    background-color: $color3;
+    background-color: $hoverColor;
   }
 }
 
 .track-info, .track {
   height: $trackHeight;
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid $color1;
   position: relative;
   box-sizing: border-box;
+}
+
+.add-track.hover-button {
+  // Compensate for the horizontal scrollbar
+  margin-bottom: 100px;
 }
 
 /**
@@ -139,7 +138,7 @@ $buttonOffset: 40px;
   padding-bottom: 10px;
 }
 
-.category-button {
+.hover-button {
   padding: 10px;
   margin: 2px;
   border-radius: 10px;
@@ -149,14 +148,19 @@ $buttonOffset: 40px;
   transition: all 0.5s;
 }
 
-.category-button:hover {
-  background-color: #45bde9;
+.hover-button:hover {
+  background-color: $hoverColor;
   border: 1px solid $color1;
   cursor: pointer;
 }
 
-.category-button.active {
-  background-color: #e94545;
+.hover-button:active {
+  color: $color1;
+  background-color: $activeColor;
+}
+
+.hover-button.active {
+  background-color: $activeColor;
   color: $color1;
 }
 
@@ -166,7 +170,6 @@ $buttonOffset: 40px;
 .loop-available {
   padding: 5px;
   background-color: $color1;
-  margin: 5px;
   border-radius: 10px;
   .loop-name {
     padding: 5px;
@@ -174,10 +177,22 @@ $buttonOffset: 40px;
   audio {
     width: 100%;
   }
+}
+
+.category-loops .loop-available{
+  margin: 5px;
   &:hover {
-    background-color: $color3;
+    background-color: $hoverColor;
   }
 }
+
+.loops .loop-available {
+  &:active {
+    color: $color1;
+    background-color: $activeColor;
+  }
+}
+
 
 /**
  * Drag and drop
@@ -247,9 +262,9 @@ $buttonOffset: 40px;
 }
 
 .button:hover .triangle {
-  border-left: 25px solid #45bde9;
+  border-left: 25px solid $hoverColor;
 }
 
 .button:active .triangle {
-  border-left: 25px solid #e94545;
+  border-left: 25px solid $activeColor;
 }

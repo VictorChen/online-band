@@ -179,19 +179,10 @@ html, body {
 }
 
 .category-loops .loop-available{
-  margin: 5px;
   &:hover {
     background-color: $hoverColor;
   }
 }
-
-.loops .loop-available {
-  &:active {
-    // color: $color1;
-    // background-color: $activeColor;
-  }
-}
-
 
 /**
  * Drag and drop

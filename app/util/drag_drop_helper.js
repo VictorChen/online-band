@@ -8,6 +8,36 @@ define([
 function ($, _) {
   'use strict';
 
+  function hasCollision ($track, $loop) {
+    var collision = false;
+    var width = $loop.outerWidth();
+    var left = parseFloat($loop.css('left'));
+    var right = left + width;
+
+    // Too far left, overlapping with the tracks. Let's just move it
+    // to the front for them
+    if (left < 0) {
+      left = 0;
+      right = width;
+      $loop.css('left', 0);
+    }
+
+    // See if the current position collides with anything in the track
+    $track.find('.track-loop').each(function () {
+      var $this = $(this);
+      // Don't compare itself
+      if (!$this.is($loop)) {
+        var currentLeft = $this.position().left;
+        var currentRight = currentLeft + $this.outerWidth();
+        if ((currentLeft < left && currentRight > left) || (currentLeft > left && currentLeft < right)) {
+          collision = true;
+          return;
+        }
+      }
+    });
+    return collision;
+  }
+
   function applyLoopsPaneDraggable ($elems) {
     $elems.draggable({
       appendTo: '.loops',
@@ -39,30 +69,55 @@ function ($, _) {
   function applyTracksPaneDroppable ($elems) {
     $elems.droppable({
       hoverClass: "track-hover",
-      accept: function ($draggable) {
-        var currentDropOffset = $draggable.offset();
-        $draggable.siblings().each(function () {
-          var offset = $(this).offset();            
-        })
-        return true;
-      },
       drop: function (event, ui) {
-        if (!ui.helper.hasClass('track-loop')) {
-          var position = ui.position;
-          var $loop = ui.draggable.clone();
-          $loop.find('audio').removeAttr('loop');
-          $loop.css('left', position.left);
-          $loop.addClass('track-loop');
-          $loop.width($loop.attr('duration') * 50);
-          $loop.resizable({
-            handles: 'e, w'
-          });
-          $(this).append($loop);
-          applyTracksPaneDraggable($loop);
-        } else {
-          $(this).append(ui.draggable);
-          ui.draggable.css('top', 0);
+        // Don't drop if it has collision
+        if (hasCollision($(this), ui.helper)) {
+          // Move it back!
+          ui.draggable.draggable('option', 'revert', true);
+          return;
         }
+
+        // Set back the invalid revert option
+        ui.draggable.draggable('option', 'revert', 'invalid');
+
+        // Moving from track to track
+        if (ui.helper.hasClass('track-loop')) {
+          // Add loop to the current track
+          $(this).append(ui.draggable);
+
+          // Fix vertical align
+          ui.draggable.css('top', 0);
+          return;
+        }
+
+        // Moving from loop pane to track
+        var left = parseFloat(ui.helper.css('left'));
+        var $loop = ui.helper.clone();
+
+        // Don't loop the audio anymore
+        $loop.find('audio').removeAttr('loop');
+
+        // Position the loop 
+        $loop.css({
+          left: left,
+          top: 0,
+          opacity: 1
+        });
+
+        // Add class for styling and to differentiate it
+        // from the loops in the loops pane
+        $loop.addClass('track-loop');
+
+        // Allow horizontal resizing
+        $loop.resizable({
+          handles: 'e, w'
+        });
+
+        // Add to current track
+        $(this).append($loop);
+
+        // Make it draggable again
+        applyTracksPaneDraggable($loop);
       }
     });
   }

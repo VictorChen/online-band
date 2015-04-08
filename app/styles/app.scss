@@ -110,7 +110,6 @@ html, body {
     padding: 5px;
     margin: 5px 0;
     border-radius: 10px;
-    z-index: 10;
   }
   &.track-hover {
     background-color: $hoverColor;
@@ -188,8 +187,8 @@ html, body {
 
 .loops .loop-available {
   &:active {
-    color: $color1;
-    background-color: $activeColor;
+    // color: $color1;
+    // background-color: $activeColor;
   }
 }
 

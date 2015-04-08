@@ -2,12 +2,13 @@ define([
   'backbone',
   'jquery',
   'underscore',
+  '../util/drag_drop_helper',
   'text!../templates/loops_pane.html',
   'text!../templates/loop_available.html',
   'jquery_ui/ui/draggable'
 ],
 
-function (Backbone, $, _, Template, LoopTemplate) {
+function (Backbone, $, _, dragDropHelper, Template, LoopTemplate) {
   'use strict';
 
   var loopAvailableTemplate = _.template(LoopTemplate);
@@ -30,16 +31,8 @@ function (Backbone, $, _, Template, LoopTemplate) {
           $categoryContainer.append($newLoop);
         });
 
-        $categoryContainer.find('.loop-available').draggable({
-          appendTo: 'body',
-          helper: function () {
-            var $clone = $(this).clone();
-            $clone.width($(this).attr('duration') * 50);
-            return $clone;
-          },
-          snap: true,
-          snapTolerance: 5
-        });
+        var $newLoops = $categoryContainer.find('.loop-available');
+        dragDropHelper.applyLoopsPaneDraggable($newLoops);
       });
     },
     showCategoryLoops: function (event) {

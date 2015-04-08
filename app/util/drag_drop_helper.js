@@ -29,7 +29,8 @@ function ($, _) {
       if (!$this.is($loop)) {
         var currentLeft = $this.position().left;
         var currentRight = currentLeft + $this.outerWidth();
-        if ((currentLeft < left && currentRight > left) || (currentLeft > left && currentLeft < right)) {
+        if ((currentLeft < left && currentRight > left) ||
+          (currentLeft > left && currentLeft < right)) {
           collision = true;
           return;
         }
@@ -62,7 +63,10 @@ function ($, _) {
       zIndex: 10,
       revert: 'invalid',
       scrollSpeed: 10,
-      opacity: 0.5
+      opacity: 0.5,
+      start: function (event, ui) {
+        ui.helper.removeClass('collision');
+      }
     });
   }
 
@@ -74,6 +78,7 @@ function ($, _) {
         if (hasCollision($(this), ui.helper)) {
           // Move it back!
           ui.draggable.draggable('option', 'revert', true);
+          ui.helper.addClass('collision');
           return;
         }
 

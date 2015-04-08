@@ -191,6 +191,10 @@ html, body {
   cursor: grab;
 }
 
+.ui-draggable-dragging.collision {
+  background-color: red;
+}
+
 
 /**
  * The Play button

@@ -100,7 +100,7 @@ function ($, _) {
         var $loop = ui.helper.clone();
 
         // Don't loop the audio anymore
-        $loop.find('audio').removeAttr('loop');
+        $loop.find('audio')[0].loop = false;
 
         // Position the loop 
         $loop.css({

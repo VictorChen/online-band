@@ -110,6 +110,12 @@ html, body {
     padding: 5px;
     margin: 5px 0;
     border-radius: 10px;
+    .loop-name {
+      height: 18px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
   &.track-hover {
     background-color: $hoverColor;
@@ -178,7 +184,7 @@ html, body {
   }
 }
 
-.category-loops .loop-available{
+.category-loops .loop-available {
   &:hover {
     background-color: $hoverColor;
   }

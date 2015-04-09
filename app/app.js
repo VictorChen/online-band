@@ -31,10 +31,13 @@ function (
   // Create the tracks pane view
   var tracksPaneView = new TracksPaneView({
     el: '.loops-main'
-  });
+  }).render();
 
-  // Let's create the first track for them!
-  tracksPaneView.render().addTrack();
+  // Let's add a few tracks for the user
+  tracksPaneView.addTrack();
+  tracksPaneView.addTrack();
+  tracksPaneView.addTrack();
+  tracksPaneView.addTrack();
 
   // Create controls pane
   var controlsPaneView = new ControlsPane({

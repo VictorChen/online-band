@@ -27,7 +27,7 @@ function ($, _) {
       var $this = $(this);
       // Don't compare itself
       if (!$this.is($loop)) {
-        var currentLeft = $this.position().left;
+        var currentLeft = parseFloat($this.css('left'));
         var currentRight = currentLeft + $this.outerWidth();
         if ((currentLeft < left && currentRight > left) ||
           (currentLeft > left && currentLeft < right)) {

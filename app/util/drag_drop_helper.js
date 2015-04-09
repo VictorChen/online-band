@@ -2,17 +2,20 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'models/category'
+  './loop_helper'
 ],
 
-function ($, _) {
+function ($, _, Backbone, loopHelper) {
   'use strict';
+
+  // Make use of backbone events
+  var events = _.extend({}, Backbone.Events);
 
   function hasCollision ($track, $loop) {
     var collision = false;
     var width = $loop.outerWidth();
-    var left = parseFloat($loop.css('left'));
-    var right = left + width;
+    var left = loopHelper.left($loop);
+    var right = loopHelper.right($loop);
 
     // Too far left, overlapping with the tracks. Let's just move it
     // to the front for them
@@ -27,12 +30,12 @@ function ($, _) {
       var $this = $(this);
       // Don't compare itself
       if (!$this.is($loop)) {
-        var currentLeft = parseFloat($this.css('left'));
-        var currentRight = currentLeft + $this.outerWidth();
+        var currentLeft = loopHelper.left($loop);
+        var currentRight = loopHelper.right($loop);
         if ((currentLeft < left && currentRight > left) ||
           (currentLeft > left && currentLeft < right)) {
           collision = true;
-          return;
+          return; // break out of loop
         }
       }
     });
@@ -74,8 +77,10 @@ function ($, _) {
     $elems.droppable({
       hoverClass: "track-hover",
       drop: function (event, ui) {
+        var $track = $(this);
+
         // Don't drop if it has collision
-        if (hasCollision($(this), ui.helper)) {
+        if (hasCollision($track, ui.helper)) {
           // Move it back!
           ui.draggable.draggable('option', 'revert', true);
           ui.helper.addClass('collision');
@@ -88,19 +93,20 @@ function ($, _) {
         // Moving from track to track
         if (ui.helper.hasClass('track-loop')) {
           // Add loop to the current track
-          $(this).append(ui.draggable);
+          $track.append(ui.draggable);
 
           // Fix vertical align
           ui.draggable.css('top', 0);
+          events.trigger('drop', $track, ui.draggable);
           return;
         }
 
         // Moving from loop pane to track
-        var left = parseFloat(ui.helper.css('left'));
+        var left = loopHelper.left(ui.helper);
         var $loop = ui.helper.clone();
 
         // Don't loop the audio anymore
-        $loop.find('audio')[0].loop = false;
+        loopHelper.audio($loop).loop = false;
 
         // Position the loop 
         $loop.css({
@@ -119,10 +125,12 @@ function ($, _) {
         });
 
         // Add to current track
-        $(this).append($loop);
+        $track.append($loop);
 
         // Make it draggable again
         applyTracksPaneDraggable($loop);
+
+        events.trigger('drop', $track, $loop);
       }
     });
   }
@@ -130,6 +138,7 @@ function ($, _) {
   return {
     applyLoopsPaneDraggable: applyLoopsPaneDraggable,
     applyTracksPaneDraggable: applyTracksPaneDraggable,
-    applyTracksPaneDroppable: applyTracksPaneDroppable
+    applyTracksPaneDroppable: applyTracksPaneDroppable,
+    events: events
   }
 });

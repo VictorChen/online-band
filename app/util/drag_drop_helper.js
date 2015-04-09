@@ -30,8 +30,8 @@ function ($, _, Backbone, loopHelper) {
       var $this = $(this);
       // Don't compare itself
       if (!$this.is($loop)) {
-        var currentLeft = loopHelper.left($loop);
-        var currentRight = loopHelper.right($loop);
+        var currentLeft = loopHelper.left($this);
+        var currentRight = loopHelper.right($this);
         if ((currentLeft < left && currentRight > left) ||
           (currentLeft > left && currentLeft < right)) {
           collision = true;

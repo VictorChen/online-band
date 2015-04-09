@@ -98,6 +98,12 @@ html, body {
   min-width: calc(100% - #{$trackContainerWidth + $trackRightBorderWidth});
 }
 
+.loops .seeker {
+  z-index: 30;
+  position: absolute;
+  border: 1px dashed red;
+}
+
 .track {
   width: 1500px;
   &:last-child {

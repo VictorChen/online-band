@@ -35,6 +35,31 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
       dragDropHelper.applyTracksPaneDroppable($track);
       $trackInfo.append($trackName);
       $trackInfo.insertBefore(this.$('.add-track'));
+      var $seeker = this.$('.seeker');
+      $seeker.height($seeker.height() + $track.height());
+    },
+    play: function () {
+      var $seeker = this.$('.seeker');
+      var length = this.$('.track').eq(0).outerWidth();
+      var self = this;
+      $seeker.animate({left: length}, {
+        easing: 'linear',
+        duration: length/0.05,
+        step: function (now, tween) {
+          // TODO:
+          // Refactor this to improve performance!!
+          var loops = self.$('.track-loop');
+          var i = loops.length;
+          while (i--) {
+            var loop = loops.eq(i);
+            var left = loopHelper.left(loop);
+            var audio = loopHelper.audio(loop);
+            if (Math.abs(left - now) < 1 && audio.paused) {
+              audio.play();
+            }
+          }
+        }
+      });
     },
     syncScrollbars: function () {
       var self = this;
@@ -42,9 +67,16 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
         self.$('.tracks').scrollTop($(this).scrollTop());
       });
     },
+    initializeSeeker: function () {
+      var $seeker = this.$('.seeker');
+      $seeker.draggable({
+        axis: 'x'
+      });
+    },
     render: function () {
       this.$el.html(this.template({}));
       this.syncScrollbars();
+      this.initializeSeeker();
       return this;
     }
   });

@@ -76,6 +76,7 @@ function ($, _, Backbone, loopHelper) {
   function applyTracksPaneDroppable ($elems) {
     $elems.droppable({
       hoverClass: "track-hover",
+      accept: '.track-loop, .loop-available',
       drop: function (event, ui) {
         var $track = $(this);
 

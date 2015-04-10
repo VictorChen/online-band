@@ -38,28 +38,62 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
       var $seeker = this.$('.seeker');
       $seeker.height($seeker.height() + $track.height());
     },
-    play: function () {
-      var $seeker = this.$('.seeker');
-      var length = this.$('.track').eq(0).outerWidth();
-      var self = this;
-      $seeker.animate({left: length}, {
-        easing: 'linear',
-        duration: length/0.05,
-        step: function (now, tween) {
-          // TODO:
-          // Refactor this to improve performance!!
-          var loops = self.$('.track-loop');
-          var i = loops.length;
-          while (i--) {
-            var loop = loops.eq(i);
-            var left = loopHelper.left(loop);
-            var audio = loopHelper.audio(loop);
-            if (Math.abs(left - now) < 1 && audio.paused) {
-              audio.play();
-            }
+    bufferAudio: function () {
+      var promises = this.$('.track-loop').map(function () {
+        var deferred = $.Deferred();
+        var audio = loopHelper.audio($(this));
+        if ($(this).data('buffered')) {
+          audio.pause();
+          audio.currentTime = 0;  
+          deferred.resolve();
+        } else {
+          var oldVolume = audio.volume;
+          audio.volume = 0;
+          audio.play();
+          audio.oncanplaythrough = function () {
+            audio.pause();
+            audio.currentTime = 0;
+            audio.volume = oldVolume;
+            deferred.resolve();
+            // chome and firefox have different behaviors.
+            // Chrome only fires this event once whereas
+            // firefox fires it everytime the currentTime
+            // is changed. Let's make it a noop the second
+            // time.
+            audio.oncanplaythrough = $.noop;
           }
         }
+        return deferred.promise();
       });
+
+      return $.when.apply($, promises);
+    },
+    play: function () {
+      var self = this;
+
+      this.bufferAudio().done(function () {
+        var $seeker = self.$('.seeker');
+        var length = self.$('.track').eq(0).outerWidth();
+
+        $seeker.animate({left: length}, {
+          easing: 'linear',
+          duration: length/0.05,
+          step: function (now, tween) {
+            // TODO:
+            // Refactor this to improve performance!!
+            var loops = self.$('.track-loop');
+            var i = loops.length;
+            while (i--) {
+              var loop = loops.eq(i);
+              var left = loopHelper.left(loop);
+              var audio = loopHelper.audio(loop);
+              if (Math.abs(left - now) < 1 && audio.paused) {
+                audio.play();
+              }
+            }
+          }
+        });
+      })
     },
     syncScrollbars: function () {
       var self = this;

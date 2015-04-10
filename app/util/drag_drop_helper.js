@@ -52,7 +52,9 @@ function ($, _, Backbone, loopHelper) {
       opacity: 0.5,
       helper: function () {
         var $clone = $(this).clone();
-        $clone.width($(this).attr('duration') * 50);
+        // Firefox copies the css as inline styles... why??
+        $clone.removeAttr('style');
+        $clone.width($(this).data('duration') * 50);
         return $clone;
       }
     });
@@ -107,7 +109,11 @@ function ($, _, Backbone, loopHelper) {
         var $loop = ui.helper.clone();
 
         // Don't loop the audio anymore
-        loopHelper.audio($loop).loop = false;
+        var audio = loopHelper.audio($loop);
+        audio.loop = false;
+        audio.oncanplaythrough = function () {
+          $loop.data('buffered', true);
+        };
 
         // Position the loop 
         $loop.css({

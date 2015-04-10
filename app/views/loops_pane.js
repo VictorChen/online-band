@@ -25,9 +25,6 @@ function (Backbone, $, _, dragDropHelper, Template, LoopTemplate) {
       categoryModel.fetch().done(function (loops) {
         _.each(loops, function (loop) {
           var $newLoop = $(loopAvailableTemplate(loop));
-          $newLoop.find('audio').on('loadedmetadata', function () {
-            $newLoop.attr('duration', $(this)[0].duration);
-          });
           $categoryContainer.append($newLoop);
         });
 

@@ -2,11 +2,13 @@
   {
     "src": ["loops/looperman-l-0928630-0060711-raychris-tomorrow-accordion-lead.wav"],
     "name": "Tomorrow Accordion Lead",
+    "duration": 7.509773,
     "category": "Accordion"
   },
   {
     "src": ["loops/looperman-l-0207475-0079791-nightingale-s-cool.wav"],
     "name": "S Cool",
+    "duration": 8,
     "category": "Accordion"
   }
 ]

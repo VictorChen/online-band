@@ -70,30 +70,38 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
     },
     play: function () {
       var self = this;
+      var $seeker = this.$('.seeker');
 
+      // Reset seeker
+      $seeker.css('left', 0);
+      
+      // Sort loops by their left position
+      var loops = self.$('.track-loop').sort(function (a, b) {
+        return loopHelper.left($(a)) > loopHelper.left($(b));
+      });
+
+      // Convert to actual array
+      loops = $.makeArray(loops);
+
+      // Find the last loop that will be played
+      var lastLoop = _.max(loops, function (loop) {
+        return loopHelper.right($(loop));
+      });
+
+      // Buffer all the loops so we can play without stopping
       this.bufferAudio().done(function () {
-        var $seeker = self.$('.seeker');
-        var length = self.$('.track').eq(0).outerWidth();
+        var length = loopHelper.right($(lastLoop));
 
         $seeker.animate({left: length}, {
           easing: 'linear',
           duration: length/0.05,
-          step: function (now, tween) {
-            // TODO:
-            // Refactor this to improve performance!!
-            var loops = self.$('.track-loop');
-            var i = loops.length;
-            while (i--) {
-              var loop = loops.eq(i);
-              var left = loopHelper.left(loop);
-              var audio = loopHelper.audio(loop);
-              if (Math.abs(left - now) < 1 && audio.paused) {
-                audio.play();
-              }
+          step: function (now) {
+            if (loops.length && loopHelper.left($(loops[0])) < now) {
+              loopHelper.audio($(loops.shift())).play();
             }
           }
         });
-      })
+      });
     },
     syncScrollbars: function () {
       var self = this;

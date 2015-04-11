@@ -23,5 +23,10 @@
     "name": "Violin",
     "key": "violin",
     "count": 2
+  },
+  {
+    "name": "Synth",
+    "key": "synth",
+    "count": 3
   }
 ]

@@ -1,8 +1,0 @@
-<div class="loop-available" data-duration=<%= duration %>>
-  <div class="loop-name"><%= name %></div>
-  <audio controls preload="none" loop>
-    <% _.each(src, function(path) { %>
-      <source src="<%= path %>">
-    <% }); %>
-  </audio>
-</div>

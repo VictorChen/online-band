@@ -5,7 +5,7 @@ define([
   'models/category'
 ],
 
-function ($, _, Backbone, categoryModel) {
+function ($, _, Backbone, CategoryModel) {
   'use strict';
 
   return Backbone.Model.extend({
@@ -16,7 +16,7 @@ function ($, _, Backbone, categoryModel) {
     url: 'categories.json', // should really just be /categories
     parse: function (categories) {
       var categoryModels = _.map(categories, function (category) {
-        return new categoryModel({
+        return new CategoryModel({
           id: category.key + '.json', // shouldn't need the .json...
           name: category.name,
           count: category.count

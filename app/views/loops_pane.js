@@ -2,34 +2,32 @@ define([
   'backbone',
   'jquery',
   'underscore',
-  '../util/drag_drop_helper',
+  './loop_player',
   'text!../templates/loops_pane.html',
-  'text!../templates/loop_available.html',
   'jquery_ui/ui/draggable'
 ],
 
-function (Backbone, $, _, dragDropHelper, Template, LoopTemplate) {
+function (Backbone, $, _, LoopPlayerView, Template) {
   'use strict';
-
-  var loopAvailableTemplate = _.template(LoopTemplate);
 
   return Backbone.View.extend({
     template: _.template(Template),
     events: {
       'click .hover-button': 'showCategoryLoops'
     },
+    categoryViews: {},
     initialize: function (options) {
       this.collection = options.collection;
     },
     createCategory: function (categoryModel, $categoryContainer) {
+      var self = this;
       categoryModel.fetch().done(function (loops) {
         _.each(loops, function (loop) {
-          var $newLoop = $(loopAvailableTemplate(loop));
-          $categoryContainer.append($newLoop);
+          var newLoop = new LoopPlayerView(loop).render();
+          self.categoryViews[loop.category] = self.categoryViews[loop.category] || [];
+          self.categoryViews[loop.category].push(newLoop);
+          $categoryContainer.append(newLoop.$el);
         });
-
-        var $newLoops = $categoryContainer.find('.loop-available');
-        dragDropHelper.applyLoopsPaneDraggable($newLoops);
       });
     },
     showCategoryLoops: function (event) {

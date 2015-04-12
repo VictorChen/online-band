@@ -1,10 +1,4 @@
-define([
-  'jquery',
-  'underscore',
-  'backbone'
-],
-
-function ($, _, Backbone) {
+define(function () {
   'use strict';
 
   function getLeft ($loop) {
@@ -28,5 +22,5 @@ function ($, _, Backbone) {
     left: getLeft,
     right: getRight,
     audio: getHtmlAudio
-  }
+  };
 });

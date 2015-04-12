@@ -49,6 +49,7 @@ function ($, _, Backbone, loopHelper) {
       snap: true,
       snapTolerance: 5,
       revert: 'invalid',
+      handle: '.loop-name',
       opacity: 0.5,
       helper: function () {
         var $clone = $(this).clone();
@@ -77,7 +78,7 @@ function ($, _, Backbone, loopHelper) {
 
   function applyTracksPaneDroppable ($elems) {
     $elems.droppable({
-      hoverClass: "track-hover",
+      hoverClass: 'track-hover',
       accept: '.track-loop, .loop-available',
       drop: function (event, ui) {
         var $track = $(this);
@@ -147,5 +148,5 @@ function ($, _, Backbone, loopHelper) {
     applyTracksPaneDraggable: applyTracksPaneDraggable,
     applyTracksPaneDroppable: applyTracksPaneDroppable,
     events: events
-  }
+  };
 });

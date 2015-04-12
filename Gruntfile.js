@@ -12,7 +12,10 @@ module.exports = function(grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        'app/scripts/{,*/}*.js',
+        'app/models/{,*/}*.js',
+        'app/util/{,*/}*.js',
+        'app/views/{,*/}*.js',
+        'app/app.js',
         '!app/scripts/vendor/*'
       ]
     },

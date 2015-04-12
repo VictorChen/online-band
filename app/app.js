@@ -1,6 +1,5 @@
 require([
   'jquery',
-  'howler',
   'models/categories_collection',
   'views/loops_pane',
   'views/tracks_pane',
@@ -10,7 +9,6 @@ require([
 
 function (
   $,
-  Howler,
   CategoriesCollectionModel,
   LoopsPaneView,
   TracksPaneView,
@@ -22,7 +20,7 @@ function (
   var categoriesModel = new CategoriesCollectionModel();
   categoriesModel.fetch().done(function () {
     // Create the loops pane view
-    var loopsPaneView = new LoopsPaneView({
+    new LoopsPaneView({
       el: '.loops-pane',
       collection: categoriesModel.get('collection')
     }).render();

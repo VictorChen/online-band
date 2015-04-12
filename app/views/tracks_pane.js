@@ -2,6 +2,7 @@ define([
   'backbone',
   'jquery',
   'underscore',
+  './track',
   '../util/drag_drop_helper',
   '../util/loop_helper',
   'text!../templates/tracks_pane.html',
@@ -9,7 +10,7 @@ define([
   'jquery_ui/ui/resizable'
 ],
 
-function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
+function (Backbone, $, _, TrackView, dragDropHelper, loopHelper, Template) {
   'use strict';
 
   return Backbone.View.extend({
@@ -17,6 +18,7 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
     events: {
       'click .add-track': 'addTrack'
     },
+    trackViews: [],
     initialize: function () {
       this.listenTo(dragDropHelper.events, 'drop', this.resizeTracks);
     },
@@ -28,15 +30,15 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
       }
     },
     addTrack: function () {
-      var $track = $('<div class="track"></div>');
-      var $trackInfo = $('<div class="track-info"></div>');
-      var $trackName = $('<div class="track-name">Track</div>');
-      this.$('.loops').append($track);
-      dragDropHelper.applyTracksPaneDroppable($track);
-      $trackInfo.append($trackName);
-      $trackInfo.insertBefore(this.$('.add-track'));
+      // Create a new track
+      var trackView = new TrackView();
+      // Append the track
+      trackView.infoView.$el.insertBefore(this.$('.add-track'));
+      this.$('.loops').append(trackView.loopsView.$el);
+      // Increase height of seeker
       var $seeker = this.$('.seeker');
-      $seeker.height($seeker.height() + $track.height());
+      $seeker.height($seeker.height() + trackView.loopsView.$el.height());
+      this.trackViews.push(trackView);
     },
     bufferAudio: function () {
       var promises = this.$('.track-loop').map(function () {
@@ -50,18 +52,18 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
           var oldVolume = audio.volume;
           audio.volume = 0;
           audio.play();
-          audio.oncanplaythrough = function () {
+          audio.onended = function () {
             audio.pause();
             audio.currentTime = 0;
             audio.volume = oldVolume;
-            deferred.resolve();
             // chome and firefox have different behaviors.
             // Chrome only fires this event once whereas
             // firefox fires it everytime the currentTime
             // is changed. Let's make it a noop the second
             // time.
-            audio.oncanplaythrough = $.noop;
-          }
+            audio.onended = $.noop;
+            deferred.resolve();
+          };
         }
         return deferred.promise();
       });
@@ -73,7 +75,7 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
       var $seeker = this.$('.seeker');
 
       // Reset seeker
-      $seeker.css('left', 0);
+      $seeker.stop().css('left', 0);
       
       // Sort loops by their left position
       var loops = self.$('.track-loop').sort(function (a, b) {
@@ -91,6 +93,12 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
       // Buffer all the loops so we can play without stopping
       this.bufferAudio().done(function () {
         var length = loopHelper.right($(lastLoop));
+
+        // TODO:
+        // Keep track of disjoint sections of loops instead
+        // and play each loop chanined to the next with the
+        // "onended" event. Join the sections together with
+        // setTimeout
 
         $seeker.animate({left: length}, {
           easing: 'linear',
@@ -112,7 +120,8 @@ function (Backbone, $, _, dragDropHelper, loopHelper, Template) {
     initializeSeeker: function () {
       var $seeker = this.$('.seeker');
       $seeker.draggable({
-        axis: 'x'
+        axis: 'x',
+        containment: 'parent'
       });
     },
     render: function () {

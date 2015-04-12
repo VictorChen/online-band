@@ -114,7 +114,7 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       };
       var setTime = function (event, ui) {
         // Ignore if it's changed programmatically
-        if (this.loaded && event.currentTarget) {
+        if (self.loaded && event.currentTarget) {
           var time = self.howler.duration() * (ui.value / 100);
           self.howler.seek(time);
           self.updateTime();

@@ -21,32 +21,37 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       var self = this;
       this.oldVolume = 0;
       this.name = options.name;
+      this.loaded = false;
       this.howler = new Howler.Howl({
         src: options.src,
         loop: true,
-        volume: 0.5
+        volume: 0.5,
+        preload: false
       });
       this.howler.once('load', function () {
+        self.loaded = true;
+        self.howler.volume(self.$volumeSlider.slider('value') / 100);
         var durationText = self.formatTime(self.howler.duration());
         self.$('.loop-duration').text(durationText);
+        self.playHandler();
       });
     },
     toggleVolume: function (event) {
       var $target = $(event.target);
       if ($target.hasClass('loop-volume') ||
         $target.hasClass('loop-volume-icon')) {
-        var tempVolume = this.howler.volume();
-        this.$volumeSlider.slider('value', this.oldVolume * 100);
+        var tempVolume = this.$volumeSlider.slider('value');
+        this.$volumeSlider.slider('value', this.oldVolume);
         this.oldVolume = tempVolume;
       }
     },
     syncVolume: function () {
-      var currentVolume = this.howler.volume();
+      var currentVolume = this.$volumeSlider.slider('value')
       var $volume = this.$('.loop-volume-icon');
       $volume.attr('class', 'loop-volume-icon');
-      if (currentVolume > 0.7) {
+      if (currentVolume > 70) {
         $volume.addClass('icono-volumeHigh');
-      } else if (currentVolume > 0.4) {
+      } else if (currentVolume > 40) {
         $volume.addClass('icono-volumeMedium');
       } else if (currentVolume > 0) {
         $volume.addClass('icono-volumeLow');
@@ -88,6 +93,10 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       $currentTime.text(this.formatTime(currentTime));
     },
     playHandler: function () {
+      if (!this.loaded) {
+        this.howler.load();
+        return;
+      }
       if (this.$('.loop-play-icon').hasClass('icono-play')) {
         this.syncPlayer();
         this.howler.play();
@@ -105,7 +114,7 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       };
       var setTime = function (event, ui) {
         // Ignore if it's changed programmatically
-        if (event.currentTarget) {
+        if (this.loaded && event.currentTarget) {
           var time = self.howler.duration() * (ui.value / 100);
           self.howler.seek(time);
           self.updateTime();

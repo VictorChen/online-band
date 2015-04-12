@@ -6,7 +6,10 @@
     "category": "Drum"
   },
   {
-    "src": ["loops/looperman-l-0102056-0072776-dj4real-trap-backer-beat-100.wav"],
+    "src": [
+      "loops/looperman-l-0102056-0072776-dj4real-trap-backer-be.wav",
+      "loops/looperman-l-0102056-0072776-dj4real-trap-backer-be.ogg"
+    ],
     "name": "Trap Backer Beat 100",
     "duration": 4.8,
     "category": "Drum"

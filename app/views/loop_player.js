@@ -35,6 +35,9 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
         self.$('.loop-duration').text(durationText);
         self.playHandler();
       });
+      this.howler.once('loaderror', function () {
+        alert('Error loading the audio');
+      });
     },
     toggleVolume: function (event) {
       var $target = $(event.target);

@@ -92,15 +92,13 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
     play: function () {
       if (!this.isPlayable()) {
         // TODO: better handling
-        alert('Please wait until the audios are loaded');
+        window.alert('Please wait until the audios are loaded');
         return;
       }
 
-      var self = this;
       var $seeker = this.$('.seeker').stop().css('left', 0);
-
+      
       var allLoops = [];
-
       _.each(this.trackViews, function (trackView) {
         allLoops.push.apply(allLoops, trackView.getLoops());
       });

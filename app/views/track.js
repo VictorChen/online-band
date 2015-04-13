@@ -1,10 +1,11 @@
 define([
+  'underscore',
   'backbone',
   '../util/drag_drop_helper',
   '../util/constants'
 ],
 
-function (Backbone, dragDropHelper, constants) {
+function (_, Backbone, dragDropHelper, constants) {
   'use strict';
 
   var InfoView = Backbone.View.extend({

@@ -2,10 +2,11 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  './loop_helper'
+  './loop_helper',
+  './constants'
 ],
 
-function ($, _, Backbone, loopHelper) {
+function ($, _, Backbone, loopHelper, constants) {
   'use strict';
 
   // Make use of backbone events
@@ -53,9 +54,7 @@ function ($, _, Backbone, loopHelper) {
       opacity: 0.5,
       helper: function () {
         var $clone = $(this).clone();
-        // Firefox copies the css as inline styles... why??
-        $clone.removeAttr('style');
-        $clone.width($(this).data('duration') * 50);
+        $clone.width($(this).data('options').estimateDuration * constants.pixelsPerSecond);
         return $clone;
       }
     });
@@ -68,6 +67,7 @@ function ($, _, Backbone, loopHelper) {
       snapTolerance: 5,
       zIndex: 10,
       revert: 'invalid',
+      handle: '.loop-name',
       scrollSpeed: 10,
       opacity: 0.5,
       start: function (event, ui) {
@@ -79,9 +79,10 @@ function ($, _, Backbone, loopHelper) {
   function applyTracksPaneDroppable ($elems) {
     $elems.droppable({
       hoverClass: 'track-hover',
-      accept: '.track-loop, .loop-available',
+      accept: '.loop',
       drop: function (event, ui) {
         var $track = $(this);
+        var trackIndex = $track.index('.track');
 
         // Don't drop if it has collision
         if (hasCollision($track, ui.helper)) {
@@ -96,49 +97,63 @@ function ($, _, Backbone, loopHelper) {
 
         // Moving from track to track
         if (ui.helper.hasClass('track-loop')) {
+          var prevTrackIndex = ui.draggable.parent().index('.track');
           // Add loop to the current track
           $track.append(ui.draggable);
 
           // Fix vertical align
           ui.draggable.css('top', 0);
-          events.trigger('drop', $track, ui.draggable);
+
+          // Fire the event
+          events.trigger('move', {
+            prevTrackIndex: prevTrackIndex,
+            trackIndex: trackIndex,
+            id: ui.draggable.attr('id')
+          });
           return;
         }
 
         // Moving from loop pane to track
         var left = loopHelper.left(ui.helper);
-        var $loop = ui.helper.clone();
+        var loopData = ui.draggable.data('options');
+        loopData.inTrack = true;
+        // var loopView = new LoopPlayerView();
+        // var $loop = ui.helper.clone();
 
         // Don't loop the audio anymore
-        var audio = loopHelper.audio($loop);
-        audio.loop = false;
-        audio.oncanplaythrough = function () {
-          $loop.data('buffered', true);
-        };
+        // var audio = loopHelper.audio($loop);
+        // audio.loop = false;
+        // audio.oncanplaythrough = function () {
+        //   $loop.data('buffered', true);
+        // };
 
         // Position the loop 
-        $loop.css({
-          left: left,
-          top: 0,
-          opacity: 1
-        });
+        // $loop.css({
+        //   left: left,
+        //   top: 0,
+        //   opacity: 1
+        // });
 
         // Add class for styling and to differentiate it
         // from the loops in the loops pane
-        $loop.addClass('track-loop');
+        // $loop.addClass('track-loop');
 
         // Allow horizontal resizing
-        $loop.resizable({
-          handles: 'e, w'
-        });
+        // $loop.resizable({
+        //   handles: 'e, w'
+        // });
 
         // Add to current track
-        $track.append($loop);
+        // $track.append($loop);
 
         // Make it draggable again
-        applyTracksPaneDraggable($loop);
+        // applyTracksPaneDraggable($loop);
 
-        events.trigger('drop', $track, $loop);
+        events.trigger('new', {
+          trackIndex: trackIndex,
+          loopData: loopData,
+          left: left
+        });
       }
     });
   }

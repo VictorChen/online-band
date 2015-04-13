@@ -72,8 +72,8 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('default', [
-    'clean',
     'jshint',
+    'clean',
     'sass',
     'autoprefixer',
     'requirejs',

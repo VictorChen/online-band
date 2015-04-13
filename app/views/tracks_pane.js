@@ -3,14 +3,16 @@ define([
   'jquery',
   'underscore',
   './track',
+  './loop_player',
   '../util/drag_drop_helper',
   '../util/loop_helper',
+  '../util/constants',
   'text!../templates/tracks_pane.html',
   'jquery_ui/ui/droppable',
   'jquery_ui/ui/resizable'
 ],
 
-function (Backbone, $, _, TrackView, dragDropHelper, loopHelper, Template) {
+function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper, constants, Template) {
   'use strict';
 
   return Backbone.View.extend({
@@ -20,13 +22,26 @@ function (Backbone, $, _, TrackView, dragDropHelper, loopHelper, Template) {
     },
     trackViews: [],
     initialize: function () {
-      this.listenTo(dragDropHelper.events, 'drop', this.resizeTracks);
+      this.listenTo(dragDropHelper.events, 'new', this.addLoop);
+      this.listenTo(dragDropHelper.events, 'move', this.moveLoop);
     },
-    resizeTracks: function ($track, $loop) {
-      var trackWidth = $track.width();
-      var rightPosition = loopHelper.right($loop);
-      if (Math.abs(trackWidth - rightPosition) < 500) {
-        this.$('.track').width(trackWidth*1.5);
+    addLoop: function (meta) {
+      var trackView = this.trackViews[meta.trackIndex];
+      var loopPlayerView = new LoopPlayerView(meta.loopData);
+      loopPlayerView.$el.css({left: meta.left, top: 0});
+      trackView.addLoop(loopPlayerView);
+      this.resizeTracks(meta.trackIndex, loopPlayerView);
+    },
+    moveLoop: function (meta) {
+      var trackView = this.trackViews[meta.prevTrackIndex];
+      var loopPlayerView = trackView.removeLoop(meta.id);
+      this.trackViews[meta.trackIndex].addLoop(loopPlayerView, meta.id);
+    },
+    resizeTracks: function (trackIndex, loopPlayerView) {
+      var trackWidth = this.trackViews[trackIndex].loopsView.$el.width();
+      var rightPosition = loopHelper.right(loopPlayerView.$el);
+      if (Math.abs(trackWidth-rightPosition) < constants.pixelsBeforeResize) {
+        this.$('.track').width(trackWidth*constants.resizeFactor);
       }
     },
     addTrack: function () {
@@ -40,75 +55,80 @@ function (Backbone, $, _, TrackView, dragDropHelper, loopHelper, Template) {
       $seeker.height($seeker.height() + trackView.loopsView.$el.height());
       this.trackViews.push(trackView);
     },
-    bufferAudio: function () {
-      var promises = this.$('.track-loop').map(function () {
-        var deferred = $.Deferred();
-        var audio = loopHelper.audio($(this));
-        if ($(this).data('buffered')) {
-          audio.pause();
-          audio.currentTime = 0;  
-          deferred.resolve();
-        } else {
-          var oldVolume = audio.volume;
-          audio.volume = 0;
-          audio.play();
-          audio.onended = function () {
-            audio.pause();
-            audio.currentTime = 0;
-            audio.volume = oldVolume;
-            // chome and firefox have different behaviors.
-            // Chrome only fires this event once whereas
-            // firefox fires it everytime the currentTime
-            // is changed. Let's make it a noop the second
-            // time.
-            audio.onended = $.noop;
-            deferred.resolve();
-          };
-        }
-        return deferred.promise();
+    isPlayable: function () {
+      return !_.some(this.trackViews, function (trackView) {
+        return !trackView.isPlayable();
       });
 
-      return $.when.apply($, promises);
+      // var promises = this.$('.track-loop').map(function () {
+      //   var deferred = $.Deferred();
+      //   var audio = loopHelper.audio($(this));
+      //   if ($(this).data('buffered')) {
+      //     audio.pause();
+      //     audio.currentTime = 0;  
+      //     deferred.resolve();
+      //   } else {
+      //     var oldVolume = audio.volume;
+      //     audio.volume = 0;
+      //     audio.play();
+      //     audio.onended = function () {
+      //       audio.pause();
+      //       audio.currentTime = 0;
+      //       audio.volume = oldVolume;
+      //       // chome and firefox have different behaviors.
+      //       // Chrome only fires this event once whereas
+      //       // firefox fires it everytime the currentTime
+      //       // is changed. Let's make it a noop the second
+      //       // time.
+      //       audio.onended = $.noop;
+      //       deferred.resolve();
+      //     };
+      //   }
+      //   return deferred.promise();
+      // });
+
+      // return $.when.apply($, promises);
     },
     play: function () {
-      var self = this;
-      var $seeker = this.$('.seeker');
+      if (!this.isPlayable()) {
+        // TODO: better handling
+        alert('Please wait until the audios are loaded');
+        return;
+      }
 
-      // Reset seeker
-      $seeker.stop().css('left', 0);
+      var self = this;
+      var $seeker = this.$('.seeker').stop().css('left', 0);
+
+      var allLoops = [];
+
+      _.each(this.trackViews, function (trackView) {
+        allLoops.push.apply(allLoops, trackView.getLoops());
+      });
       
       // Sort loops by their left position
-      var loops = self.$('.track-loop').sort(function (a, b) {
-        return loopHelper.left($(a)) > loopHelper.left($(b));
+      allLoops.sort(function (a, b) {
+        return loopHelper.left(a.$el) > loopHelper.left(b.$el);
       });
-
-      // Convert to actual array
-      loops = $.makeArray(loops);
 
       // Find the last loop that will be played
-      var lastLoop = _.max(loops, function (loop) {
-        return loopHelper.right($(loop));
+      var lastLoop = _.max(allLoops, function (loopPlayerView) {
+        return loopHelper.right(loopPlayerView.$el);
       });
 
-      // Buffer all the loops so we can play without stopping
-      this.bufferAudio().done(function () {
-        var length = loopHelper.right($(lastLoop));
-
-        // TODO:
-        // Keep track of disjoint sections of loops instead
-        // and play each loop chanined to the next with the
-        // "onended" event. Join the sections together with
-        // setTimeout
-
-        $seeker.animate({left: length}, {
-          easing: 'linear',
-          duration: length/0.05,
-          step: function (now) {
-            if (loops.length && loopHelper.left($(loops[0])) < now) {
-              loopHelper.audio($(loops.shift())).play();
-            }
+      // TODO:
+      // Keep track of disjoint sections of loops
+      // and play each loop chanined to the next with the
+      // "onended" event instead. Join the sections together with
+      // setTimeout
+      var length = loopHelper.right(lastLoop.$el);
+      $seeker.animate({left: length}, {
+        easing: 'linear',
+        duration: length / (constants.pixelsPerSecond / 1000),
+        step: function (now) {
+          if (allLoops.length && loopHelper.left(allLoops[0].$el) < now) {
+            allLoops.shift().seek(0).play();
           }
-        });
+        }
       });
     },
     syncScrollbars: function () {

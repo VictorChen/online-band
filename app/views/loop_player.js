@@ -14,30 +14,56 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
     template: _.template(Template),
     className: 'loop',
     events: {
-      'click .loop-play': 'playHandler',
+      'click .loop-play': 'play',
       'click .loop-volume': 'toggleVolume'
     },
     initialize: function (options) {
-      var self = this;
       this.oldVolume = 0;
       this.name = options.name;
+      this.estimateDuration = options.estimateDuration;
       this.loaded = false;
+      this.inTrack = !!options.inTrack;
+      this.createHowler(options.src);
+      // Save the data so we can re-create the view
+      // on drag/drop
+      this.$el.attr('id', _.uniqueId('loop-'));
+      this.$el.data('options', options);
+    },
+    createHowler: function (src) {
+      var self = this;
       this.howler = new Howler.Howl({
-        src: options.src,
-        loop: true,
+        src: src,
+        loop: !self.inTrack,
         volume: 0.5,
-        preload: false
+        preload: self.inTrack
       });
-      this.howler.once('load', function () {
-        self.loaded = true;
-        self.howler.volume(self.$volumeSlider.slider('value') / 100);
-        var durationText = self.formatTime(self.howler.duration());
-        self.$('.loop-duration').text(durationText);
-        self.playHandler();
+      // Howler doesn't fire the "load" event if it is
+      // already loaded...
+      // https://github.com/goldfire/howler.js/issues/293
+      if (this.howler._loaded) {
+        this.onLoad();
+      }
+      this.howler.on('load', _.bind(this.onLoad, this));
+      this.howler.on('end', function () {
+        if (!self.howler.loop()) {
+          self.togglePlayButton();
+        }
       });
       this.howler.once('loaderror', function () {
-        alert('Error loading the audio');
+        // TODO: add better handling
+        window.alert('Error loading the audio');
       });
+    },
+    onLoad: function () {
+      this.loaded = true;
+      if (this.$volumeSlider) {
+        this.howler.volume(this.$volumeSlider.slider('value') / 100);
+      }
+      var durationText = this.formatTime(this.howler.duration());
+      this.$('.loop-duration').text(durationText);
+      if (!this.inTrack) {
+        this.play();
+      }
     },
     toggleVolume: function (event) {
       var $target = $(event.target);
@@ -49,7 +75,7 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       }
     },
     syncVolume: function () {
-      var currentVolume = this.$volumeSlider.slider('value')
+      var currentVolume = this.$volumeSlider.slider('value');
       var $volume = this.$('.loop-volume-icon');
       $volume.attr('class', 'loop-volume-icon');
       if (currentVolume > 70) {
@@ -95,19 +121,28 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       var currentTime = this.howler.seek();
       $currentTime.text(this.formatTime(currentTime));
     },
-    playHandler: function () {
+    togglePlayButton: function () {
+      this.$('.loop-play-icon').toggleClass('icono-play icono-pause');
+    },
+    play: function () {
       if (!this.loaded) {
         this.howler.load();
-        return;
-      }
-      if (this.$('.loop-play-icon').hasClass('icono-play')) {
-        this.syncPlayer();
-        this.howler.play();
       } else {
-        this.stopSyncPlayer();
-        this.howler.pause();
+        if (this.$('.loop-play-icon').hasClass('icono-play')) {
+          this.syncPlayer();
+          this.howler.play();
+        } else {
+          this.stopSyncPlayer();
+          this.howler.pause();
+        }
+        this.togglePlayButton();
       }
-      this.$('.loop-play-icon').toggleClass('icono-play icono-pause');
+      return this;
+    },
+    seek: function (time) {
+      this.howler.seek(time);
+      this.updateTime();
+      return this;
     },
     hookUpPlayer: function () {
       var self = this;
@@ -119,8 +154,7 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
         // Ignore if it's changed programmatically
         if (self.loaded && event.currentTarget) {
           var time = self.howler.duration() * (ui.value / 100);
-          self.howler.seek(time);
-          self.updateTime();
+          self.seek(time);
         }
       };
       this.$timeSlider = this.$('.loop-time-track').slider({
@@ -137,12 +171,20 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
         change: setVolume
       });
     },
+    makeDraggable: function () {
+      if (this.inTrack) {
+        dragDropHelper.applyTracksPaneDraggable(this.$el);
+      } else {
+        dragDropHelper.applyLoopsPaneDraggable(this.$el);
+      }
+    },
     render: function () {
       this.$el.html(this.template({
-        name: this.name
+        name: this.name,
+        duration: this.formatTime(this.estimateDuration)
       }));
-      dragDropHelper.applyLoopsPaneDraggable(this.$el);
       this.hookUpPlayer();
+      this.makeDraggable();
       return this;
     }
   });

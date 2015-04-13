@@ -85,19 +85,13 @@ html, body {
   &:last-child {
     margin-bottom: 100px;
   }
-  .track-loop {
+  .loop {
     position: absolute;
     background-color: $color1;
     height: $trackHeight - 20px;
     padding: 5px;
     margin: 5px 0;
     border-radius: 10px;
-    .loop-name {
-      height: 18px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   }
   &.track-hover {
     background-color: $hoverColor;

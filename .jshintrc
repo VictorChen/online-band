@@ -15,6 +15,7 @@
   "undef": true,
   "unused": true,
   "strict": true,
+  "es3": true,
   "trailing": true,
   "smarttabs": true,
   "jquery": true,

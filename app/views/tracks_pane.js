@@ -36,6 +36,7 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       var trackView = this.trackViews[meta.prevTrackIndex];
       var loopPlayerView = trackView.removeLoop(meta.id);
       this.trackViews[meta.trackIndex].addLoop(loopPlayerView, meta.id);
+      this.resizeTracks(meta.trackIndex, loopPlayerView);
     },
     resizeTracks: function (trackIndex, loopPlayerView) {
       var trackWidth = this.trackViews[trackIndex].loopsView.$el.width();
@@ -59,43 +60,42 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       return !_.some(this.trackViews, function (trackView) {
         return !trackView.isPlayable();
       });
+    },
+    getLoopChain: function (allLoops, index) {
+      var chain = [index];
+      var right = allLoops[index].getRight();
 
-      // var promises = this.$('.track-loop').map(function () {
-      //   var deferred = $.Deferred();
-      //   var audio = loopHelper.audio($(this));
-      //   if ($(this).data('buffered')) {
-      //     audio.pause();
-      //     audio.currentTime = 0;  
-      //     deferred.resolve();
-      //   } else {
-      //     var oldVolume = audio.volume;
-      //     audio.volume = 0;
-      //     audio.play();
-      //     audio.onended = function () {
-      //       audio.pause();
-      //       audio.currentTime = 0;
-      //       audio.volume = oldVolume;
-      //       // chome and firefox have different behaviors.
-      //       // Chrome only fires this event once whereas
-      //       // firefox fires it everytime the currentTime
-      //       // is changed. Let's make it a noop the second
-      //       // time.
-      //       audio.onended = $.noop;
-      //       deferred.resolve();
-      //     };
-      //   }
-      //   return deferred.promise();
-      // });
+      // TODO: use binary search
+      var connectedLoops = [];
+      _.each(allLoops, function (currentLoop, i) {
+        if (currentLoop.getLeft() === right) {
+          connectedLoops.push(i);
+        }
+      });
 
-      // return $.when.apply($, promises);
+      if (connectedLoops.length) {
+        _.each(connectedLoops, function (connectedLoop) {
+          chain.push.apply(chain, this.getLoopChain(allLoops, connectedLoop));
+        }, this);
+      }
+
+      return chain;
+    },
+    attachStartHandler: function (currentLoop, nextLoop) {
+      currentLoop.howler.once('end', function () {
+        if (nextLoop) {
+          nextLoop.play();
+        }
+      });
     },
     play: function () {
       if (!this.isPlayable()) {
         // TODO: better handling
-        window.alert('Please wait until the audios are loaded');
+        window.alert('Please try again when the audios are loaded');
         return;
       }
 
+      // Reset seeker
       var $seeker = this.$('.seeker').stop().css('left', 0);
       
       var allLoops = [];
@@ -105,28 +105,49 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       
       // Sort loops by their left position
       allLoops.sort(function (a, b) {
-        return loopHelper.left(a.$el) > loopHelper.left(b.$el);
+        return a.getLeft() > b.getLeft();
       });
 
       // Find the last loop that will be played
-      var lastLoop = _.max(allLoops, function (loopPlayerView) {
-        return loopHelper.right(loopPlayerView.$el);
-      });
+      var length = _.max(allLoops, function (loopPlayerView) {
+        return loopPlayerView.getRight();
+      }).getRight();
 
-      // TODO:
-      // Keep track of disjoint sections of loops
-      // and play each loop chanined to the next with the
-      // "onended" event instead. Join the sections together with
-      // setTimeout
-      var length = loopHelper.right(lastLoop.$el);
+      var chains = [];
+
+      while (allLoops.length) {
+        var loopChain = this.getLoopChain(allLoops, 0);
+        
+        // Loop from the end so removing from array won't mess
+        // up the indexes
+        for (var i=loopChain.length-1; i>=0; i--) {
+          var index = loopChain[i];
+          loopChain[i] = allLoops[index];
+          allLoops.splice(index, 1);
+          this.attachStartHandler(loopChain[i], loopChain[i+1]);
+        }
+
+        var prevStartTime = chains.length? _.last(chains).chain[0].getStart() : 0;
+        chains.push({
+          waitTime: (loopChain[0].getStart() - prevStartTime) * 1000,
+          chain: loopChain
+        });
+      }
+
+      var playChain = function () {
+        var currentChain = chains.shift();
+        if (currentChain) {
+          setTimeout(function () {
+            currentChain.chain[0].play();
+            playChain();
+          }, currentChain.waitTime);
+        }
+      };
+
       $seeker.animate({left: length}, {
         easing: 'linear',
         duration: length / (constants.pixelsPerSecond / 1000),
-        step: function (now) {
-          if (allLoops.length && loopHelper.left(allLoops[0].$el) < now) {
-            allLoops.shift().seek(0).play();
-          }
-        }
+        start: playChain
       });
     },
     syncScrollbars: function () {
@@ -143,7 +164,7 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       });
     },
     render: function () {
-      this.$el.html(this.template({}));
+      this.$el.html(this.template());
       this.syncScrollbars();
       this.initializeSeeker();
       return this;

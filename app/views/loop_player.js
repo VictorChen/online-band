@@ -4,10 +4,12 @@ define([
   'howler',
   'text!../templates/loop.html',
   '../util/drag_drop_helper',
+  '../util/loop_helper',
+  '../util/constants',
   'jquery_ui/ui/slider'
 ],
 
-function (_, Backbone, Howler, Template, dragDropHelper) {
+function (_, Backbone, Howler, Template, dragDropHelper, loopHelper, constants) {
   'use strict';
 
   return Backbone.View.extend({
@@ -120,6 +122,15 @@ function (_, Backbone, Howler, Template, dragDropHelper) {
       var $currentTime = this.$('.loop-current-time');
       var currentTime = this.howler.seek();
       $currentTime.text(this.formatTime(currentTime));
+    },
+    getLeft: function () {
+      return loopHelper.left(this.$el);
+    },
+    getRight: function () {
+      return loopHelper.right(this.$el);
+    },
+    getStart: function () {
+      return this.getLeft() / constants.pixelsPerSecond;
     },
     togglePlayButton: function () {
       this.$('.loop-play-icon').toggleClass('icono-play icono-pause');

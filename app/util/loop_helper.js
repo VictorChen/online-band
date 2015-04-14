@@ -14,13 +14,8 @@ define(function () {
     return left + width;
   }
 
-  function getHtmlAudio ($loop) {
-    return $loop.find('audio')[0];
-  }
-
   return {
     left: getLeft,
-    right: getRight,
-    audio: getHtmlAudio
+    right: getRight
   };
 });

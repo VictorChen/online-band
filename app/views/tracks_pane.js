@@ -81,10 +81,14 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
 
       return chain;
     },
-    attachStartHandler: function (currentLoop, nextLoop) {
+    attachStartHandler: function (loops, index) {
+      var currentLoop = loops[index];
       currentLoop.howler.once('end', function () {
-        if (nextLoop) {
-          nextLoop.play();
+        for (var i=index+1; i<loops.length; i++) {
+          var nextLoop = loops[i];
+          if (nextLoop && currentLoop.getRight() === nextLoop.getLeft()) {
+            nextLoop.play();
+          }
         }
       });
     },
@@ -124,7 +128,7 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
           var index = loopChain[i];
           loopChain[i] = allLoops[index];
           allLoops.splice(index, 1);
-          this.attachStartHandler(loopChain[i], loopChain[i+1]);
+          this.attachStartHandler(loopChain, i);
         }
 
         var prevStartTime = chains.length? _.last(chains).chain[0].getStart() : 0;

@@ -78,6 +78,9 @@ module.exports = function(grunt) {
     },
     cssmin: {
       dist: {
+        options: {
+          keepSpecialComments: 0
+        },
         files: [{
           src: [
             'app/bower_components/normalize.css/normalize.css',

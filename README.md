@@ -9,6 +9,4 @@ With the introduction to HTML5 and web audio, we can now play audios natively wi
 - howler.js - Awesome web audio wrapper that is easy to use
 - backbone.js - lightweight framework that offers clean separation of logic (models and views)
 
-## Demo (current progress)
-
-<a href="http://chenvic.com/onlineband" target="_blank">http://chenvic.com/onlineband</a>
+## <a href="http://chenvic.com/onlineband" target="_blank">Demo (current progress) </a>

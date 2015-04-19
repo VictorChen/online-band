@@ -57,9 +57,17 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       this.trackViews.push(trackView);
     },
     isPlayable: function () {
-      return !_.some(this.trackViews, function (trackView) {
-        return !trackView.isPlayable();
-      });
+      var numLoops = 0;
+
+      for (var i=0; i<this.trackViews.length; i++) {
+        var trackView = this.trackViews[i];
+        if (!trackView.isPlayable()) {
+          return false;
+        }
+        numLoops += trackView.getLoops().length;
+      }
+
+      return numLoops > 0;
     },
     getLoopChain: function (allLoops, index) {
       var chain = [index];

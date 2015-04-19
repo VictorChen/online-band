@@ -7,13 +7,7 @@ require([
   'jquery_ui/ui/resizable'
 ],
 
-function (
-  $,
-  CategoriesCollectionModel,
-  LoopsPaneView,
-  TracksPaneView,
-  ControlsPane
-) {
+function ($, CategoriesCollectionModel, LoopsPaneView, TracksPaneView,ControlsPane ) {
   'use strict';
 
   // Fetch the list of categories

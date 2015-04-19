@@ -37,23 +37,14 @@ function (_, Backbone, Howler, Template, dragDropHelper, loopHelper, constants) 
         src: src,
         loop: !self.inTrack,
         volume: 0.5,
-        preload: self.inTrack
-      });
-      // Howler doesn't fire the "load" event if it is
-      // already loaded...
-      // https://github.com/goldfire/howler.js/issues/293
-      if (this.howler._loaded) {
-        this.onLoad();
-      }
-      this.howler.on('load', _.bind(this.onLoad, this));
-      this.howler.on('end', function () {
-        if (!self.howler.loop()) {
-          self.togglePlayButton();
+        preload: self.inTrack,
+        onload: _.bind(this.onLoad, this),
+        onloaderror: this.onLoadError,
+        onend: function () {
+          if (!self.howler.loop()) {
+            self.togglePlayButton();
+          }
         }
-      });
-      this.howler.once('loaderror', function () {
-        // TODO: add better handling
-        window.alert('Error loading the audio');
       });
     },
     onLoad: function () {
@@ -66,6 +57,10 @@ function (_, Backbone, Howler, Template, dragDropHelper, loopHelper, constants) 
       if (!this.inTrack) {
         this.play();
       }
+    },
+    onLoadError: function () {
+      // TODO: add better handling
+      window.alert('Error loading the audio');
     },
     toggleVolume: function (event) {
       var $target = $(event.target);

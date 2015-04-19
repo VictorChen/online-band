@@ -36,7 +36,7 @@ function (_, Backbone, dragDropHelper, constants) {
     addLoop: function (loopPlayerView, id) {
       if (!id) {
         id = loopPlayerView.$el.attr('id');
-        var width = loopPlayerView.estimateDuration*constants.pixelsPerSecond;
+        var width = loopPlayerView.duration*constants.pixelsPerSecond;
         this.loopsView.$el.append(loopPlayerView.$el);
         loopPlayerView.$el.width(width).addClass('track-loop');
         loopPlayerView.render();

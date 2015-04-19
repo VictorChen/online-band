@@ -22,7 +22,7 @@ function (_, Backbone, Howler, Template, dragDropHelper, loopHelper, constants) 
     initialize: function (options) {
       this.oldVolume = 0;
       this.name = options.name;
-      this.estimateDuration = options.estimateDuration;
+      this.duration = options.duration;
       this.loaded = false;
       this.inTrack = !!options.inTrack;
       this.createHowler(options.src);
@@ -187,7 +187,7 @@ function (_, Backbone, Howler, Template, dragDropHelper, loopHelper, constants) 
     render: function () {
       this.$el.html(this.template({
         name: this.name,
-        duration: this.formatTime(this.estimateDuration)
+        duration: this.formatTime(this.duration)
       }));
       this.hookUpPlayer();
       this.makeDraggable();

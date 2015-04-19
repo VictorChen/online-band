@@ -54,7 +54,7 @@ function ($, _, Backbone, loopHelper, constants) {
       opacity: 0.5,
       helper: function () {
         var $clone = $(this).clone();
-        $clone.width($(this).data('options').estimateDuration * constants.pixelsPerSecond);
+        $clone.width($(this).data('options').duration * constants.pixelsPerSecond);
         return $clone;
       }
     });

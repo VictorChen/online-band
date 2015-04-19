@@ -12,10 +12,7 @@ module.exports = function(grunt) {
         reporter: require('jshint-stylish')
       },
       all: [
-        'app/models/{,*/}*.js',
-        'app/util/{,*/}*.js',
-        'app/views/{,*/}*.js',
-        'app/app.js',
+        'app/scripts/{,*/}*.js',
         'Gruntfile.js'
       ]
     },
@@ -46,9 +43,9 @@ module.exports = function(grunt) {
     requirejs: {
       dist:{
         options: {
-          baseUrl: 'app',
-          mainConfigFile: 'app/main.js',
-          name: 'bower_components/almond/almond',
+          baseUrl: 'app/scripts',
+          mainConfigFile: 'app/scripts/main.js',
+          name: '../bower_components/almond/almond',
           out: 'app/dist/app.js',
           include: 'main'
         }

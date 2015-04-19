@@ -2,7 +2,7 @@ define([
   'underscore',
   'backbone',
   'howler',
-  'text!../templates/loop.html',
+  'text!../../templates/loop.html',
   '../util/drag_drop_helper',
   '../util/loop_helper',
   '../util/constants',

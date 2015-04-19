@@ -3,7 +3,7 @@ define([
   'jquery',
   'underscore',
   './loop_player',
-  'text!../templates/loops_pane.html',
+  'text!../../templates/loops_pane.html',
   'jquery_ui/ui/draggable'
 ],
 

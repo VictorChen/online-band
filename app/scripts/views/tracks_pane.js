@@ -7,7 +7,7 @@ define([
   '../util/drag_drop_helper',
   '../util/loop_helper',
   '../util/constants',
-  'text!../templates/tracks_pane.html',
+  'text!../../templates/tracks_pane.html',
   'jquery_ui/ui/droppable',
   'jquery_ui/ui/resizable'
 ],

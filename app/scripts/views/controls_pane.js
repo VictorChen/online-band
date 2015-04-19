@@ -2,7 +2,7 @@ define([
   'backbone',
   'jquery',
   'underscore',
-  'text!../templates/controls_pane.html'
+  'text!../../templates/controls_pane.html'
 ],
 
 function (Backbone, $, _, template) {

@@ -12,6 +12,13 @@ function ($, _, Backbone, loopHelper, constants) {
   // Make use of backbone events
   var events = _.extend({}, Backbone.Events);
 
+  /**
+   * Check whether or not the loop can be dropped into the
+   * current track by checking for collisions.
+   * @param  {$object}  $track current track
+   * @param  {$object}  $loop current loop
+   * @return {boolean} whether or not it has collision
+   */
   function hasCollision ($track, $loop) {
     var collision = false;
     var width = $loop.outerWidth();
@@ -43,6 +50,11 @@ function ($, _, Backbone, loopHelper, constants) {
     return collision;
   }
 
+  /**
+   * Allow the loops to be dragged to the tracks
+   * pane.
+   * @param  {$object} $elems elements to make draggable
+   */
   function applyLoopsPaneDraggable ($elems) {
     $elems.draggable({
       appendTo: '.loops',
@@ -60,6 +72,11 @@ function ($, _, Backbone, loopHelper, constants) {
     });
   }
 
+  /**
+   * Allow loops from the tracks pane to be dragged
+   * to another track.
+   * @param  {$object} $elem elements to make draggable
+   */
   function applyTracksPaneDraggable ($elem) {
     $elem.draggable({
       appendTo: '.loops',
@@ -76,8 +93,13 @@ function ($, _, Backbone, loopHelper, constants) {
     });
   }
 
-  function applyTracksPaneDroppable ($elems) {
-    $elems.droppable({
+  /**
+   * Make the track droppable so draggable loops
+   * can be placed.
+   * @param  {[type]} $track the track to make droppable
+   */
+  function applyTracksPaneDroppable ($track) {
+    $track.droppable({
       hoverClass: 'track-hover',
       accept: '.loop',
       drop: function (event, ui) {
@@ -114,45 +136,10 @@ function ($, _, Backbone, loopHelper, constants) {
         }
 
         // Moving from loop pane to track
-        var left = loopHelper.left(ui.helper);
-        var loopData = ui.draggable.data('options');
-        loopData.inTrack = true;
-        // var loopView = new LoopPlayerView();
-        // var $loop = ui.helper.clone();
-
-        // Don't loop the audio anymore
-        // var audio = loopHelper.audio($loop);
-        // audio.loop = false;
-        // audio.oncanplaythrough = function () {
-        //   $loop.data('buffered', true);
-        // };
-
-        // Position the loop 
-        // $loop.css({
-        //   left: left,
-        //   top: 0,
-        //   opacity: 1
-        // });
-
-        // Add class for styling and to differentiate it
-        // from the loops in the loops pane
-        // $loop.addClass('track-loop');
-
-        // Allow horizontal resizing
-        // $loop.resizable({
-        //   handles: 'e, w'
-        // });
-
-        // Add to current track
-        // $track.append($loop);
-
-        // Make it draggable again
-        // applyTracksPaneDraggable($loop);
-
         events.trigger('new', {
           trackIndex: trackIndex,
-          loopData: loopData,
-          left: left
+          loopData: _.extend(ui.draggable.data('options'), {inTrack: true}),
+          left: loopHelper.left(ui.helper)
         });
       }
     });

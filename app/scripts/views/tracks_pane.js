@@ -95,7 +95,8 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
         for (var i=index+1; i<loops.length; i++) {
           var nextLoop = loops[i];
           if (nextLoop && currentLoop.getRight() === nextLoop.getLeft()) {
-            nextLoop.play();
+            // Play from beginning
+            nextLoop.seek(0).play();
           }
         }
       });
@@ -110,6 +111,7 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
       // Reset seeker
       var $seeker = this.$('.seeker').stop().css('left', 0);
       
+      // Get all the loops
       var allLoops = [];
       _.each(this.trackViews, function (trackView) {
         allLoops.push.apply(allLoops, trackView.getLoops());
@@ -125,8 +127,9 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
         return loopPlayerView.getRight();
       }).getRight();
 
+      // Populate the list of "chains". A chain is a series of
+      // loops that are back to back.
       var chains = [];
-
       while (allLoops.length) {
         var loopChain = this.getLoopChain(allLoops, 0);
         
@@ -153,7 +156,7 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
           var currentChain = chains.shift();
           if (currentChain) {
             setTimeout(function () {
-              currentChain.chain[0].play();
+              currentChain.chain[0].seek(0).play();
               playChain();
             }, currentChain.waitTime);
           }

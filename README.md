@@ -10,3 +10,13 @@ With the introduction to HTML5 and web audio, we can now play audios natively wi
 - backbone.js - lightweight framework that offers clean separation of logic (models and views)
 
 ## <a href="http://chenvic.com/onlineband" target="_blank">Demo (current progress) </a>
+
+## Getting Started
+
+```
+npm install
+bower install
+grunt
+grunt connect
+http://localhost:8000/
+```

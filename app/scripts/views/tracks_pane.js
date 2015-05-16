@@ -146,20 +146,18 @@ function (Backbone, $, _, TrackView, LoopPlayerView, dragDropHelper, loopHelper,
         });
       }
 
-      var playChain = function () {
-        var currentChain = chains.shift();
-        if (currentChain) {
-          setTimeout(function () {
-            currentChain.chain[0].play();
-            playChain();
-          }, currentChain.waitTime);
-        }
-      };
-
       $seeker.animate({left: length}, {
         easing: 'linear',
         duration: length / (constants.pixelsPerSecond / 1000),
-        start: playChain
+        start: function playChain () {
+          var currentChain = chains.shift();
+          if (currentChain) {
+            setTimeout(function () {
+              currentChain.chain[0].play();
+              playChain();
+            }, currentChain.waitTime);
+          }
+        }
       });
     },
     syncScrollbars: function () {
